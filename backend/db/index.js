@@ -1,27 +1,29 @@
 // Importing important libraries
 import mongoose from "mongoose";
+import express from "express";
+import dotenv from "dotenv";
 
 // Importing Database Name from Constants
 import { DB_NAME } from "../src/constants.js";
 
+// Initializing express app
+const app = express();
+
 const connectDB = async () => {
     try {
         // Connect to Mongoose (returns Connection Object)
-        const connectionInstance = mongoose.connect(
+        const connectionInstance = await mongoose.connect(
             `${process.env.MONGODB_URL}/${DB_NAME}`
+        );
+
+        console.log(
+            `Connected to MongoDB. DB Host: ${connectionInstance.connection.host}`
         );
 
         // If there is an error, throw it
         app.on("error", (error) => {
             console.log("ERROR: ", error);
             throw error;
-        });
-
-        // Start listening on the specified port
-        app.listen(process.env.PORT, () => {
-            console.log(
-                `App is listening on port: ${process.env.PORT}. DB Host: ${connectionInstance.connection.host}`
-            );
         });
     } catch (error) {
         // Print the error

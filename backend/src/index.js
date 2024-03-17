@@ -15,20 +15,13 @@ import { DB_NAME } from "./constants.js";
 const app = express();
 
 // Async function to try and connect to the Mongoose Database. If it fails, it will throw an error
-(async () => {
-    try {
-        // Connect to Mongoose
-        console.log(process.env.MONGODB_URL);
-        mongoose.connect(`${process.env.MONGODB_URL}/${DB_NAME}`);
-        app.on("error", (error) => {
-            console.log("ERROR: ", error);
-            throw error;
+connectDB()
+    .then(() => {
+        console.log("Connected");
+        app.listen(process.env.PORT || 8000, () => {
+            console.log(`Server running at port ${process.env.PORT}`);
         });
-        app.listen(process.env.PORT, () => {
-            console.log(`App is listening on port: ${process.env.PORT}`);
-        });
-    } catch (error) {
-        console.error("ERROR: ", error);
-        throw error;
-    }
-})();
+    })
+    .catch((error) => {
+        console.log(`MongoDB Connection Failed. Error: ${error}`);
+    });
