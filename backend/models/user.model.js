@@ -65,11 +65,15 @@ userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.passowrd);
 };
 
+// Function to generate the Access Token (encoding user DB ID, username, fName and lName as data)
 userSchema.methods.generateAccessToken = async function () {
-    jwt.sign(
+    // In order to generate our Access Token, we need to give 3 arguments -> (data, secretKey, options)
+    return jwt.sign(
         {
             _id: this._id,
             username: this.fullName,
+            firstName: this.firstName,
+            lastName: this.lastName,
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
@@ -78,8 +82,10 @@ userSchema.methods.generateAccessToken = async function () {
     );
 };
 
+// Function to generate the Refresh Token (encoding only user DB ID as data as it will be refreshed more often, so no human readable data is allowed)
 userSchema.methods.generateRefreshToken = async function () {
-    jwt.sign(
+    // In order to generate our Access Token, we need to give 3 arguments -> (data, secretKey, options)
+    return jwt.sign(
         {
             _id: this._id,
         },
